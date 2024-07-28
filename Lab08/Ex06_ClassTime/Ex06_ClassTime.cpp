@@ -7,15 +7,14 @@ using namespace std;
 class Time
 {
 public:
-    Time(int hours, int minutes, int seconds)
+    Time(int h, int m, int s)
     {
-        set_seconds(seconds);
-        set_minutes(minutes);
-        set_hours(hours);
+        set_seconds(s);
+        set_minutes(m);
+        set_hours(h);
     }
-    Time()
-    {
-    }
+
+    Time() : hours(0), minutes(0), seconds(0) {}
 
     void set_hours(int ihours)
     {
@@ -42,29 +41,46 @@ public:
             seconds = iseconds;
     }
 
-    int get_hours()
+    int get_hours() const
     {
         return hours;
     }
-    int get_minutes()
+    int get_minutes() const
     {
         return minutes;
     }
-    int get_seconds()
+    int get_seconds() const
     {
         return seconds;
     }
 
-    void const ShowTime()
+    void showTime() const
     {
+        cout.precision(2);
         cout << hours << ":" << minutes << ":" << seconds << endl;
     }
 
-    void sumTime(Time& time)
+    //void sumTime(Time& time)
+    //{
+    //    set_seconds(seconds+time.get_seconds());
+    //    set_minutes(time.get_minutes());
+    //    set_hours(time.get_hours());
+    //}
+
+    void sum_Time(Time t1, Time t2)
     {
-        set_seconds(seconds+time.get_seconds());
-        set_minutes(time.get_minutes());
-        set_hours(time.get_hours());
+        set_seconds(t1.get_seconds() + t2.get_seconds());
+        set_minutes(t1.get_minutes() + t2.get_minutes());
+        set_hours(t1.get_hours() + t2.get_hours());
+    }
+
+    Time sumTime(const Time& t) const
+    {
+        Time sum;
+        sum.set_seconds(seconds + t.get_seconds());
+        sum.set_minutes(minutes + t.get_minutes());
+        sum.set_hours(hours + t.get_hours());
+        return sum;
     }
 
 private:
@@ -80,21 +96,19 @@ int main()
     SetConsoleOutputCP(1251);
     SetConsoleCP(1251);
 
-    Time time00 = Time();
-    time00.ShowTime();
+    Time time00;
+    time00.showTime();
 
-    Time time01 = Time(4,50,50);
-    time01.ShowTime();
+    const Time time01(4,50,50);
+    time01.showTime();
 
     Time time02 = Time(3, 3862, 3972);//68:28:12
-    time02.ShowTime();
-
-    time02.sumTime(time01);
-    time02.ShowTime();
+    time02.showTime();
 
     Time time03;
-    time03.set_seconds(time02.get_seconds());
-    time03.set_minutes(time02.get_minutes());
-    time03.set_hours(time02.get_hours());
-    time03.ShowTime();
+    time03.sum_Time(time01, time02);
+    time03.showTime();
+
+    Time time04 = time01.sumTime(time02);
+    time04.showTime();
 }
