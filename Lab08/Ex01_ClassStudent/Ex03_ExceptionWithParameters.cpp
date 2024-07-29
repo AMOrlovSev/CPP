@@ -3,12 +3,26 @@
 
 #include <iostream>
 #include <string>
+#include <windows.h>
 
 using namespace std;
 
 class Student
 {
 public:
+
+	class ExScore //класс исключений
+	{
+	public:
+		string origin; //для имени функции
+		int iValue; //для хранения ошибочного значения
+		ExScore(string os, int sc)
+		{
+			origin = os; //строка с именем виновника ошибки
+			iValue = sc; //сохраненное неправильное значение
+		}
+	};
+
 	// Установка имени студента
 	void set_name(string student_name)
 	{
@@ -33,6 +47,8 @@ public:
 	void set_scores(int student_scores[])
 	{
 		for (int i = 0; i < 5; ++i) {
+			if (student_scores[i] > 5)
+				throw ExScore("в функции set_scores()", student_scores[i]);
 			scores[i] = student_scores[i];
 		}
 	}
@@ -55,6 +71,9 @@ private:
 
 int main()
 {
+	SetConsoleOutputCP(1251);
+	SetConsoleCP(1251);
+
 	// Создание объекта класса Student
 	Student student01;
 	string name;
@@ -81,12 +100,21 @@ int main()
 	// Сохранение имени и фамилии в объект класса Student
 	student01.set_name(name);
 	student01.set_last_name(last_name);
-	// Сохранение промежуточных оценок в объект класса Student
-	student01.set_scores(scores);
-	//double average_score = sum / 5.0;
-	double average_score = (double)sum / size(scores);
-	// Сохранение среднего балла в объект класса Student
-	student01.set_average_score(average_score);
+	try
+	{
+		// Сохранение промежуточных оценок в объект класса Student
+		student01.set_scores(scores);
+		//double average_score = sum / 5.0;
+		double average_score = (double)sum / size(scores);
+		// Сохранение среднего балла в объект класса Student
+		student01.set_average_score(average_score);
+	}
+
+	catch (Student::ExScore& ex)
+	{
+		cout << "\nОшибка инициализации " << ex.origin;
+		cout << "\nВведенное значение оценки " << ex.iValue << "является недопустимым\n";
+	}
 
 	cout << "Average ball for " << student01.get_name() << " "
 		<< student01.get_last_name() << " is "
